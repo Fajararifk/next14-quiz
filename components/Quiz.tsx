@@ -106,73 +106,135 @@ const Quiz = ({ questions, userId }: QuizProps) => {
     }
   };
 
+  // const nextQuestion = () => {
+  //   setSelectedAnswerIndex(null);
+  //   const updatedResults = selectedAnswer
+  //   ? {
+  //       ...results,
+  //       score: results.score + 5,
+  //       correctAnswers: results.correctAnswers + 1,
+  //     }
+  //   : {
+  //       ...results,
+  //       wrongAnswers: results.wrongAnswers + 1,
+  //     };
+
+  // // Update the state
+  // setResults(updatedResults);
+  // var test = results;
+  //   if (activeQuestion !== questions.length - 1) {
+  //     setActiveQuestion((prev) => prev + 1);
+  //   } else {
+  //     setShowResults(true);
+  //     stopTimer();
+  //     fetch("/api/quizResults", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         userId: userId,
+  //         quizScore: updatedResults.score,
+  //         correctAnswers: updatedResults.correctAnswers,
+  //         wrongAnswers: updatedResults.wrongAnswers,
+  //         counterInsert: 1
+  //       }),
+  //     })
+  //       .then((response) => {
+  //         if (!response.ok) {
+  //           throw new Error(
+  //             "Network response was not working fam"
+  //           );
+  //         }
+  //         return response.json();
+  //       })
+  //       .then((data) => {
+  //         console.log(
+  //           "Quiz results saved successfully:",
+  //           data
+  //         );
+  //       })
+  //       .catch((error) => {
+  //         console.error(
+  //           "Error saving quiz results:",
+  //           error
+  //         );
+  //       });
+  //   }
+  //   setChecked(false);
+  //   // resetTimer();
+  //   // startTimer();
+  //   if (updatedResults.correctAnswers + updatedResults.wrongAnswers === questions.length){
+  //     stopTimer();
+  //   }
+  //   else {
+  //     resetTimer();
+  //     startTimer();
+  //   }
+    
+  // };
   const nextQuestion = () => {
     setSelectedAnswerIndex(null);
     const updatedResults = selectedAnswer
-    ? {
-        ...results,
-        score: results.score + 5,
-        correctAnswers: results.correctAnswers + 1,
-      }
-    : {
-        ...results,
-        wrongAnswers: results.wrongAnswers + 1,
-      };
+        ? {
+            ...results,
+            score: results.score + 5,
+            correctAnswers: results.correctAnswers + 1,
+        }
+        : {
+            ...results,
+            wrongAnswers: results.wrongAnswers + 1,
+        };
 
-  // Update the state
-  setResults(updatedResults);
-  var test = results;
+    setResults(updatedResults);
+
     if (activeQuestion !== questions.length - 1) {
-      setActiveQuestion((prev) => prev + 1);
+        setActiveQuestion((prev) => prev + 1);
     } else {
-      setShowResults(true);
-      stopTimer();
-      fetch("/api/quizResults", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: userId,
-          quizScore: updatedResults.score,
-          correctAnswers: updatedResults.correctAnswers,
-          wrongAnswers: updatedResults.wrongAnswers,
-          counterInsert: 1
-        }),
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error(
-              "Network response was not working fam"
-            );
-          }
-          return response.json();
-        })
-        .then((data) => {
-          console.log(
-            "Quiz results saved successfully:",
-            data
-          );
-        })
-        .catch((error) => {
-          console.error(
-            "Error saving quiz results:",
-            error
-          );
-        });
+        setShowResults(true);
+        stopTimer();
     }
+
     setChecked(false);
-    // resetTimer();
-    // startTimer();
-    if (updatedResults.correctAnswers + updatedResults.wrongAnswers === questions.length){
-      stopTimer();
+
+    if (updatedResults.correctAnswers + updatedResults.wrongAnswers === questions.length) {
+        stopTimer();
+    } else {
+        resetTimer();
+        startTimer();
     }
-    else {
-      resetTimer();
-      startTimer();
+
+    // Move the fetch call into useEffect to ensure it runs client-side
+    if (activeQuestion === questions.length - 1) {
+        useEffect(() => {
+            fetch("/api/quizResults", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    userId: userId,
+                    quizScore: updatedResults.score,
+                    correctAnswers: updatedResults.correctAnswers,
+                    wrongAnswers: updatedResults.wrongAnswers,
+                    counterInsert: 1
+                }),
+            })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Network response was not working");
+                }
+                return response.json();
+            })
+            .then((data) => {
+                console.log("Quiz results saved successfully:", data);
+            })
+            .catch((error) => {
+                console.error("Error saving quiz results:", error);
+            });
+        }, []); // Empty dependency array ensures this only runs when the component mounts (client-side)
     }
-    
-  };
+};
 
   return (
     <div className="min-h-[500px]">
