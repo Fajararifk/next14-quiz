@@ -11,13 +11,13 @@ const page = async () => {
 //   user.quizResults
 // )));
   users.sort(
-    (a, b) =>
+    (a : any, b :any) =>
       b.quizResults.reduce(
-        (acc, curr) => acc + curr.quizScore,
+        (acc: any, curr: any) => acc + curr.quizScore,
         0
       ) -
       a.quizResults.reduce(
-        (acc, curr) => acc + curr.quizScore,
+        (acc: any, curr: any) => acc + curr.quizScore,
         0
       )
   );
@@ -27,7 +27,7 @@ const page = async () => {
         Leaderboards 🏆
       </h1>
       <ol>
-        {users.map((user, index) => (
+        {users.map((user : any, index: any) => (
           <li
             key={user.id}
             className={`py-4 ${
@@ -57,7 +57,7 @@ const page = async () => {
                 <span>
                   Total Quiz Score:{" "}
                   {user.quizResults.reduce(
-                    (acc, curr) => acc + curr.quizScore,
+                    (acc: any, curr: any) => acc + curr.quizScore,
                     0
                   )}
                 </span>
