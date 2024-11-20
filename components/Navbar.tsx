@@ -14,7 +14,7 @@ const Navbar = () => {
             className="flex gap-1 items-center text-2xl"
           >
             <h1 className="text-dark font-bold">
-              CodeQuiz
+              Soal Ujian
             </h1>
             <MdQuiz className="text-primary" />
           </Link>
